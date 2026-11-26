@@ -1,0 +1,27 @@
+<header><h1>EduManager</h1></header>
+<main>
+  <section class="grid" aria-label="Statistiques">
+    <p class="card">Étudiants : {{ service.total() }}</p>
+    <p class="card">Moyenne : {{ service.average() | number:'1.1-2' }}/20</p>
+    <p class="card">Réussites : {{ service.admitted() }}</p>
+  </section>
+  <h2>Ajouter un étudiant</h2>
+  <form #studentForm="ngForm" (ngSubmit)="add()">
+    <label>Prénom <input name="firstName" [(ngModel)]="draft.firstName" required></label>
+    <label>Nom <input name="lastName" [(ngModel)]="draft.lastName" required></label>
+    <label>E-mail <input type="email" name="email" [(ngModel)]="draft.email" required email></label>
+    <label>Note <input type="number" name="grade" min="0" max="20" step="any" [(ngModel)]="draft.grade" required></label>
+    <label>Actif <input type="checkbox" name="active" [(ngModel)]="draft.active"></label>
+    <button [disabled]="studentForm.invalid">Ajouter</button>
+  </form>
+  <label>Rechercher <input #search (input)="searchChanges.next(search.value)"></label>
+  <ul class="grid">
+    @for (student of filteredStudents(); track student.id) {
+      <li class="card">
+        <strong>{{ student.firstName }} {{ student.lastName }}</strong>
+        <p>{{ student.email }} · {{ student.grade }}/20 · {{ student.active ? 'Actif' : 'Inactif' }}</p>
+        <button type="button" (click)="service.remove(student.id)">Supprimer</button>
+      </li>
+    } @empty { <li>Aucun étudiant trouvé.</li> }
+  </ul>
+</main>
